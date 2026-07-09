@@ -1,0 +1,1947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zuma Employee Review</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:      #1a2b5e;
+    --navy-mid:  #243476;
+    --navy-soft: #2e3f8a;
+    --red:       #c0392b;
+    --red-dark:  #a02318;
+    --red-pale:  #fdf0ee;
+    --red-light: #f5c6c2;
+    --slate:     #3d4f6b;
+    --smoke:     #5a6e8a;
+    --fog:       #8094b0;
+    --cloud:     #b8c8d8;
+    --bg:        #f0f2f8;
+    --surface:   #ffffff;
+    --surface2:  #f5f6fb;
+    --border:    #dde1ee;
+    --border-focus: #1a2b5e;
+    --text:      #0f1e45;
+    --text-2:    #2d3f5c;
+    --text-3:    #5a6e8a;
+    --green:     #2e7d32;
+    --green-pale:#e8f5e9;
+    --shadow-sm: 0 1px 3px rgba(26,43,94,0.07), 0 1px 2px rgba(26,43,94,0.04);
+    --shadow:    0 4px 16px rgba(26,43,94,0.09), 0 1px 4px rgba(26,43,94,0.05);
+    --shadow-lg: 0 12px 40px rgba(26,43,94,0.15), 0 4px 12px rgba(26,43,94,0.08);
+    --radius:    14px;
+    --radius-sm: 8px;
+    --transition: 0.18s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--navy);
+    height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-brand { font-size: 15px; font-weight: 600; color: white; letter-spacing: -0.2px; }
+  .header-divider { width: 1px; height: 18px; background: rgba(255,255,255,0.15); }
+  .header-subtitle { font-size: 13px; color: rgba(255,255,255,0.45); font-weight: 400; }
+  #header-context {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.2px;
+    transition: color 0.3s;
+  }
+  #header-context.has-employee { color: rgba(255,255,255,0.75); }
+
+  /* ── LAYOUT ── */
+  .app-layout {
+    display: flex;
+    max-width: 100%;
+    padding: 28px 32px;
+    gap: 0;
+    align-items: flex-start;
+  }
+
+  /* ── LEFT PANEL ── */
+  .left-panel {
+    width: 300px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: sticky;
+    top: 78px;
+    align-self: flex-start;
+  }
+
+  .panel-card {
+    background: var(--surface2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 16px 18px;
+    transition: box-shadow var(--transition);
+  }
+  .panel-card:hover { box-shadow: var(--shadow); }
+
+  .field-meta {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--fog);
+    margin-bottom: 7px;
+  }
+
+  select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 9px 32px 9px 11px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2378909c' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") no-repeat right 10px center;
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+  select:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(26,43,94,0.14);
+    background-color: white;
+  }
+
+  .fy-row { display: flex; gap: 10px; }
+  .fy-row > div { flex: 1; }
+
+  /* ── PROGRESS DOTS ── */
+  .progress-card {
+    background: var(--surface2);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    padding: 14px 18px;
+  }
+  .progress-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--fog);
+    margin-bottom: 10px;
+  }
+  .progress-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .progress-tab-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 4px 0;
+    position: relative;
+  }
+  .progress-tab-row:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 26px;
+    width: 2px;
+    height: 18px;
+    background: var(--border);
+    border-radius: 2px;
+  }
+  .progress-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: white;
+    flex-shrink: 0;
+    transition: all var(--transition);
+  }
+  .progress-dot.partial { background: #f5a623; border-color: #f5a623; }
+  .progress-dot.empty { background: var(--red); border-color: var(--red); }
+  .progress-dot.complete { background: var(--green); border-color: var(--green); }
+  .progress-dot.active { background: var(--navy); border-color: var(--navy); box-shadow: 0 0 0 3px rgba(26,43,94,0.15); }
+  .progress-tab-row.partial .progress-tab-label { color: #d4881a; }
+  .progress-tab-row.empty .progress-tab-label { color: var(--red); }
+  .progress-tab-row.complete .progress-tab-label { color: var(--green); }
+  .progress-tab-label {
+    font-size: 12px;
+    color: var(--text-3);
+    transition: color var(--transition);
+  }
+  .progress-tab-row.active .progress-tab-label { color: var(--navy); font-weight: 600; }
+  .progress-tab-row.touched .progress-tab-label { color: var(--green); }
+
+  /* ── SUBMIT BUTTON ── */
+  .submit-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Sora', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 13px 20px;
+    cursor: pointer;
+    transition: all var(--transition);
+    letter-spacing: -0.1px;
+    box-shadow: 0 2px 8px rgba(26,43,94,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .submit-btn:hover {
+    background: linear-gradient(135deg, var(--navy-soft) 0%, var(--navy-mid) 100%);
+    box-shadow: 0 4px 16px rgba(26,43,94,0.4);
+    transform: translateY(-1px);
+    border-left: 3px solid var(--red);
+  }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.7; transform: none; cursor: not-allowed; }
+
+  /* ── MAIN CONTENT ── */
+  .main-content {
+    flex: 1;
+    min-width: 0;
+    margin-left: 20px;
+  }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 0;
+    background: var(--bg);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 5px 5px 0 5px;
+    box-shadow: none;
+    border: none;
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 9px 20px;
+    text-align: center;
+    border: 2.5px solid var(--border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition);
+    background: transparent;
+    color: var(--text-3);
+    letter-spacing: -0.1px;
+    white-space: nowrap;
+    position: relative;
+  }
+  .tab-btn:hover {
+    background: var(--red-pale);
+    color: var(--navy);
+    border-color: var(--red-light);
+  }
+  .tab-btn.active {
+    background: var(--navy);
+    color: white;
+    font-weight: 600;
+    border: 2.5px solid var(--navy);
+    border-bottom: none;
+  }
+
+  /* ── FORM PANEL ── */
+  .form-panel {
+    background: var(--surface);
+    border-radius: 0 0 var(--radius) var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 32px 36px;
+    min-height: 520px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: var(--red-pale);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.4px;
+  }
+  .quarter-badge {
+    display: inline-flex;
+    align-items: center;
+    background: var(--red-pale);
+    color: var(--navy);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--red-light);
+    letter-spacing: 0.2px;
+    margin-left: 4px;
+  }
+
+  /* ── FIELD GROUPS ── */
+  .field-group { margin-bottom: 24px; }
+
+  .field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-2);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    letter-spacing: -0.1px;
+  }
+  .field-label .required-star {
+    color: var(--red);
+    font-size: 14px;
+    line-height: 1;
+  }
+
+  .field-hint {
+    font-size: 12px;
+    color: var(--text-3);
+    margin-bottom: 9px;
+    line-height: 1.6;
+    padding: 8px 12px;
+    background: var(--surface2);
+    border-left: 3px solid var(--red);
+    border-radius: 0 6px 6px 0;
+  }
+
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 11px 14px;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    color: var(--text);
+    resize: vertical;
+    min-height: 90px;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+    line-height: 1.65;
+    background: var(--surface2);
+  }
+  textarea:focus {
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(26,43,94,0.12);
+    background: white;
+  }
+  textarea::placeholder { color: var(--cloud); }
+
+  .rating-select { max-width: 300px; }
+
+  /* ── INFO BUTTON ── */
+  .info-btn-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+  }
+  .info-btn {
+    background: none;
+    border: 1.5px solid var(--cloud);
+    color: var(--fog);
+    border-radius: 50%;
+    width: 22px; height: 22px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition);
+    flex-shrink: 0;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .info-btn-label {
+    font-size: 11px;
+    color: var(--fog);
+    font-weight: 500;
+    transition: color var(--transition);
+  }
+  .info-btn-wrap:hover .info-btn {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: white;
+    transform: scale(1.1);
+  }
+  .info-btn-wrap:hover .info-btn-label { color: var(--navy); }
+
+  /* ── VALUE ROW ── */
+  .value-row {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+
+  /* ── NAV BUTTONS ── */
+  .form-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .nav-btn {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text-2);
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    letter-spacing: -0.1px;
+  }
+  .nav-btn:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+    background: var(--red-pale);
+    border-left: 3px solid var(--red);
+  }
+  .nav-btn.primary {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: white;
+  }
+  .nav-btn.primary:hover {
+    background: var(--navy-soft);
+    border-color: var(--navy-soft);
+    color: white;
+    border-left: 3px solid var(--red);
+  }
+
+  /* ── INFO PANEL ── */
+  .info-panel { width: 0; flex-shrink: 0; position: relative; }
+
+  .info-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,20,50,0.35);
+    z-index: 199;
+    animation: fadeIn 0.15s ease;
+  }
+  .info-overlay.visible { display: block; }
+
+  .info-panel-inner {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-lg);
+    padding: 22px 20px 20px;
+    position: fixed;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    display: none;
+    z-index: 200;
+    width: 280px;
+    transition: top 0.15s cubic-bezier(0.4,0,0.2,1);
+  }
+  .info-panel-inner.visible { display: block; }
+  .info-panel-inner::-webkit-scrollbar { width: 4px; }
+  .info-panel-inner::-webkit-scrollbar-track { background: transparent; }
+  .info-panel-inner::-webkit-scrollbar-thumb { background: var(--cloud); border-radius: 4px; }
+
+  .info-panel-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 14px;
+    padding-right: 28px;
+    letter-spacing: -0.3px;
+  }
+  .info-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--fog);
+    margin: 14px 0 6px;
+  }
+  .info-item {
+    font-size: 12px;
+    color: var(--text-2);
+    line-height: 1.55;
+    padding-left: 8px;
+    margin-bottom: 4px;
+    border-left: 2px solid var(--border);
+  }
+  .rating-block { margin: 8px 0; }
+  .rating-block strong { font-size: 12px; font-weight: 700; color: var(--text); display: block; margin-bottom: 3px; }
+  .rating-block span { font-size: 12px; color: var(--text-3); padding-left: 10px; display: block; line-height: 1.5; margin-bottom: 2px; }
+
+  .close-info-btn {
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 26px; height: 26px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--fog);
+    transition: all var(--transition);
+    line-height: 1;
+  }
+  .close-info-btn:hover { background: var(--slate); border-color: var(--slate); color: white; }
+
+  /* ── CONFIRM MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10,20,50,0.5);
+    z-index: 300;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.visible { display: flex; }
+  .modal {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 32px 28px 24px;
+    max-width: 420px;
+    width: 90%;
+    animation: modalIn 0.2s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+  .modal-icon {
+    width: 48px; height: 48px;
+    background: var(--red-pale);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+  .modal-body {
+    font-size: 14px;
+    color: var(--text-3);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .modal-employee {
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .modal-cancel {
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: white;
+    color: var(--text-2);
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 20px;
+    cursor: pointer;
+    transition: all var(--transition);
+  }
+  .modal-cancel:hover { background: var(--surface2); }
+  .modal-confirm {
+    border: none;
+    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, var(--navy-mid), var(--navy));
+    color: white;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 9px 24px;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: 0 2px 8px rgba(26,43,94,0.25);
+  }
+  .modal-confirm:hover { background: linear-gradient(135deg, var(--navy-soft), var(--navy-mid)); }
+
+  /* ── SUBMITTED BANNER ── */
+  .submitted-banner {
+    background: linear-gradient(135deg, var(--green-pale), #f1f8e9);
+    border: 1px solid #a5d6a7;
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green);
+    display: none;
+    align-items: center;
+    gap: 10px;
+  }
+  .submitted-banner.visible { display: flex; }
+
+  /* ── DIVIDER ── */
+  .section-divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+  /* ── TAB CONTENT ── */
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeIn 0.18s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── SCREEN TOGGLE ── */
+  .screen-toggle { display: flex; gap: 4px; background: rgba(255,255,255,0.06); border-radius: 8px; padding: 3px; }
+  .screen-btn {
+    border: none; background: transparent; color: rgba(255,255,255,0.55);
+    font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 600;
+    padding: 5px 14px; border-radius: 6px; cursor: pointer;
+    transition: all var(--transition); letter-spacing: -0.1px;
+  }
+  .screen-btn:hover { color: white; background: rgba(255,255,255,0.1); }
+  .screen-btn.active { background: rgba(255,255,255,0.18); color: white; }
+
+  /* ── EDIT SCREEN ── */
+  .edit-screen { display: none; }
+  .edit-screen.active { display: flex; gap: 0; }
+  .new-screen { display: flex; }
+  .new-screen.hidden { display: none; }
+
+  .edit-gallery {
+    width: 300px; flex-shrink: 0;
+    position: sticky; top: 78px; align-self: flex-start;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .edit-main { flex: 1; min-width: 0; margin-left: 20px; }
+
+  .gallery-list {
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+    overflow: hidden; max-height: calc(100vh - 160px); overflow-y: auto;
+  }
+  .gallery-list::-webkit-scrollbar { width: 4px; }
+  .gallery-list::-webkit-scrollbar-thumb { background: var(--cloud); border-radius: 4px; }
+
+  .gallery-header {
+    padding: 12px 16px; font-size: 10px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1px; color: var(--fog);
+    border-bottom: 1px solid var(--border); background: var(--surface2);
+  }
+  .gallery-item {
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background var(--transition);
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .gallery-item:last-child { border-bottom: none; }
+  .gallery-item:hover { background: var(--red-pale); }
+  .gallery-item.selected { background: var(--red-pale); border-left: 3px solid var(--navy); }
+  .gallery-item-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .gallery-item-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+  .gallery-item-arrow { color: var(--cloud); font-size: 12px; flex-shrink: 0; }
+
+  .gallery-empty {
+    padding: 32px 20px; text-align: center; color: var(--text-3);
+  }
+  .gallery-empty-icon {
+    font-size: 32px; margin-bottom: 10px; opacity: 0.35;
+    display: block;
+  }
+  .gallery-empty-text { font-size: 13px; font-weight: 500; margin-bottom: 4px; color: var(--text-2); }
+  .gallery-empty-sub { font-size: 12px; color: var(--fog); }
+
+  .edit-save-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
+    color: white; border: none; border-radius: var(--radius);
+    font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600;
+    padding: 13px 20px; cursor: pointer; transition: all var(--transition);
+    box-shadow: 0 2px 8px rgba(26,43,94,0.3);
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .edit-save-btn:hover {
+    background: linear-gradient(135deg, var(--navy-soft) 0%, var(--navy-mid) 100%);
+    box-shadow: 0 4px 16px rgba(26,43,94,0.4); transform: translateY(-1px);
+    border-left: 3px solid var(--red);
+  }
+  .edit-save-btn:disabled { opacity: 0.6; transform: none; cursor: not-allowed; }
+
+  .no-review-selected {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 400px; color: var(--text-3);
+    font-size: 14px; gap: 12px;
+  }
+  .no-review-selected svg { opacity: 0.25; }
+  .no-review-selected p { font-size: 13px; color: var(--fog); }
+
+  /* ── MOBILE FLOAT SUBMIT ── */
+  .mobile-submit {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    width: calc(100% - 40px);
+    max-width: 400px;
+  }
+
+  /* ── STICKY SECTION HEADER ── */
+  .sticky-tab-header {
+    display: none;
+    position: fixed;
+    top: 58px;
+    left: 0; right: 0;
+    z-index: 49;
+    background: var(--navy);
+    padding: 10px 32px;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 2px 12px rgba(26,43,94,0.2);
+    animation: slideDown 0.18s ease;
+  }
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .sticky-tab-header.visible { display: flex; }
+  .sticky-tab-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .sticky-tab-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.2px;
+  }
+  .sticky-tab-divider {
+    width: 1px; height: 16px;
+    background: rgba(255,255,255,0.2);
+    margin: 0 4px;
+  }
+  .sticky-tab-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+  }
+  @media (max-width: 768px) {
+    .sticky-tab-header { padding: 10px 16px; top: 52px; }
+  }
+
+  @media print {
+    .tabs, .form-nav, .left-panel, .info-panel, .header { display: none; }
+    .main-content { margin: 0; }
+    .form-panel { box-shadow: none; border: 1px solid #ccc; }
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .header { padding: 0 16px; height: 52px; }
+    .header-brand { font-size: 13px; }
+    .header-subtitle { display: none; }
+    .header-divider:last-of-type { display: none; }
+    .screen-toggle { gap: 2px; }
+    .screen-btn { font-size: 11px; padding: 4px 10px; }
+
+    .new-screen.app-layout, .edit-screen.app-layout {
+      flex-direction: column;
+      padding: 12px 12px 100px;
+      gap: 12px;
+    }
+    .left-panel, .edit-gallery { width: 100%; position: static; }
+    .fy-row { gap: 8px; }
+    .main-content, .edit-main { margin-left: 0; width: 100%; }
+
+    .tabs {
+      gap: 3px; padding: 4px 4px 0 4px;
+      overflow-x: auto; flex-wrap: nowrap;
+      -webkit-overflow-scrolling: touch; margin-bottom: 0;
+    }
+    .tab-btn {
+      font-size: 12px; padding: 8px 10px;
+      white-space: nowrap; flex-shrink: 0;
+      border-radius: 6px 6px 0 0; border-bottom: none;
+    }
+    .form-panel { padding: 20px 16px; }
+    .value-row { grid-template-columns: 1fr; gap: 8px; }
+    .rating-select { max-width: 100%; }
+    .section-icon { width: 30px; height: 30px; }
+    .section-title { font-size: 16px; }
+    .form-nav { gap: 8px; flex-wrap: wrap; }
+    .nav-btn { font-size: 12px; padding: 8px 14px; }
+
+    /* Hide left panel submit, show floating one */
+    .submit-btn { display: none; }
+    .mobile-submit { display: block; }
+
+    /* Info panel bottom sheet */
+    .info-panel-inner {
+      width: calc(100vw - 24px) !important;
+      left: 12px !important;
+      max-height: 60vh;
+      top: auto !important;
+      bottom: 80px;
+      position: fixed;
+    }
+    .gallery-list { max-height: 240px; }
+    .edit-save-btn { font-size: 13px; padding: 12px 16px; }
+    .progress-card { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .header-brand { display: none; }
+    .form-panel { padding: 16px 12px; }
+    .section-title { font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <img src="data:image/png;base64,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" alt="Zuma" style="height:36px;width:auto;object-fit:contain;display:block;border-radius:8px;">
+    <div class="header-divider"></div>
+    <span class="header-brand">Employee Review</span>
+    <div class="header-divider"></div>
+    <span class="header-subtitle">Performance Management</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;">
+    <div class="screen-toggle">
+      <button class="screen-btn active" onclick="showScreen('new')" id="btn-screen-new">New Review</button>
+      <button class="screen-btn" onclick="showScreen('edit')" id="btn-screen-edit">Edit Review</button>
+    </div>
+    <div id="header-context"></div>
+  </div>
+</header>
+
+<!-- Confirm Modal -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="modal-title">Submit Review?</div>
+    <div class="modal-body">You are about to submit the review for <span class="modal-employee" id="modal-employee-name"></span>. This will be saved to Google Sheets. Are you sure?</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmSubmit()">Yes, Submit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Validation Modal -->
+<div class="modal-overlay" id="validation-modal">
+  <div class="modal">
+    <div class="modal-icon">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="modal-title">Required Fields Missing</div>
+    <div class="modal-body">Please complete the following required fields before submitting:</div>
+    <ul id="validation-list" style="margin:12px 0 20px;padding-left:20px;display:flex;flex-direction:column;gap:6px;"></ul>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeValidationModal()">Finish Review</button>
+      <button class="modal-confirm" onclick="closeValidationModal(); confirmSubmit();" style="background:linear-gradient(135deg,var(--red-dark),var(--red));">Submit Incomplete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Info overlay -->
+<div class="info-overlay" id="info-overlay" onclick="closeInfo()"></div>
+
+<!-- Sticky section header -->
+<div class="sticky-tab-header" id="sticky-tab-header">
+  <div class="sticky-tab-icon" id="sticky-tab-icon"></div>
+  <span class="sticky-tab-title" id="sticky-tab-title">Goals</span>
+  <div class="sticky-tab-divider"></div>
+  <span class="sticky-tab-sub">Scroll up to see all tabs</span>
+</div>
+
+<div class="new-screen app-layout" id="screen-new">
+  <aside class="left-panel">
+    <div class="panel-card">
+      <div class="field-meta">Manager</div>
+      <select id="sel-manager" onchange="onManagerChange()">
+        <option value="">Loading...</option>
+      </select>
+    </div>
+    <div class="panel-card">
+      <div class="field-meta">Employee</div>
+      <select id="sel-employee" onchange="onEmployeeChange()">
+        <option value="">Select employee</option>
+      </select>
+    </div>
+    <div class="panel-card">
+      <div class="fy-row">
+        <div>
+          <div class="field-meta">FY</div>
+          <select id="sel-fy">
+            <option>24</option><option>25</option><option selected>26</option><option>27</option>
+          </select>
+        </div>
+        <div>
+          <div class="field-meta">Quarter</div>
+          <select id="sel-quarter">
+            <option value="1">Q1</option><option value="2">Q2</option>
+            <option value="3">Q3</option><option value="4" selected>Q4 / Annual</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress indicator -->
+    <div class="progress-card">
+      <div class="progress-label">Review Progress</div>
+      <div class="progress-tabs">
+        <div class="progress-tab-row active" id="prog-goals" onclick="switchTab('goals')">
+          <div class="progress-dot active" id="dot-goals"></div>
+          <span class="progress-tab-label">Goals</span>
+        </div>
+        <div class="progress-tab-row" id="prog-values" onclick="switchTab('values')">
+          <div class="progress-dot" id="dot-values"></div>
+          <span class="progress-tab-label">Corporate Values</span>
+        </div>
+        <div class="progress-tab-row" id="prog-gwc" onclick="switchTab('gwc')">
+          <div class="progress-dot" id="dot-gwc"></div>
+          <span class="progress-tab-label">Right Person, Right Seat</span>
+        </div>
+        <div class="progress-tab-row" id="prog-expectations" onclick="switchTab('expectations')">
+          <div class="progress-dot" id="dot-expectations"></div>
+          <span class="progress-tab-label">Expectations</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="openModal()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      Submit Review
+    </button>
+  </aside>
+
+  <main class="main-content">
+    <div id="submitted-banner" class="submitted-banner">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+      <span id="submitted-text">Review submitted successfully!</span>
+    </div>
+
+    <nav class="tabs">
+      <button class="tab-btn active" onclick="switchTab('goals')">Goals</button>
+      <button class="tab-btn" onclick="switchTab('values')">Corporate Values</button>
+      <button class="tab-btn" onclick="switchTab('gwc')">Right Person, Right Seat</button>
+      <button class="tab-btn" onclick="switchTab('expectations')">Expectations</button>
+    </nav>
+
+    <div class="form-panel">
+
+      <!-- GOALS -->
+      <div id="tab-goals" class="tab-content active">
+        <div class="section-header">
+          <div class="section-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <div>
+            <div class="section-title">Goals <span class="quarter-badge" id="goals-quarter-label">Q4 / Annual</span></div>
+          </div>
+        </div>
+        <div id="annual-goals-section">
+          <div class="field-group">
+            <div class="field-label"><span id="fy-prev-label">FY25 Goals</span> <span class="required-star">*</span></div>
+            <div class="field-hint">If available, what were the Annual "seat" goals identified for the employee in the previous FY? If not identified, note what objectives they worked on and use this to determine performance.</div>
+            <textarea id="fy-prev-goals" rows="4" placeholder="Enter FY25 Goals..." oninput="markTouched('goals')"></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label"><span id="fy-next-label">FY26 Goals</span> <span class="required-star">*</span></div>
+            <div class="field-hint">Everyone's role has key responsibilities. In Traction we talk about the Top 5 Roles for the position. Ideally, we translate our annual goals into targets/goals for the employee.</div>
+            <textarea id="fy-next-goals" rows="4" placeholder="Enter FY26 Goals..." oninput="markTouched('goals')"></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">
+              <span id="fy-perf-label">FY25 Performance</span>
+              <span class="required-star">*</span>
+              <span class="info-btn-wrap" onclick="showInfo('performance', this)">
+                <button class="info-btn">i</button>
+                <span class="info-btn-label">Guide</span>
+              </span>
+            </div>
+            <div class="value-row">
+              <select id="fy-performance" onchange="markTouched('goals')">
+                <option value="">— Select rating —</option>
+                <option>Strong</option><option>Solid</option><option>Needs Dev</option>
+              </select>
+              <textarea id="fy-perf-comments" rows="2" placeholder="Add comments on annual performance..." oninput="markTouched('goals')"></textarea>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+        </div>
+        <div id="quarterly-goals-section">
+          <div class="field-group">
+            <div class="field-label"><span id="q-goals-label">Q4 Goals</span> <span class="required-star">*</span></div>
+            <div class="field-hint">If available, what were the goals identified for the employee in the quarter? If not identified, note what objectives they worked on.</div>
+            <textarea id="q-goals" rows="4" placeholder="Enter quarterly goals..." oninput="markTouched('goals')"></textarea>
+          </div>
+          <div class="field-group">
+            <div class="field-label">
+              <span id="q-perf-label">Q4 Performance</span>
+              <span class="required-star">*</span>
+              <span class="info-btn-wrap" onclick="showInfo('performance', this)">
+                <button class="info-btn">i</button>
+                <span class="info-btn-label">Guide</span>
+              </span>
+            </div>
+            <div class="value-row">
+              <select id="q-performance" onchange="markTouched('goals')">
+                <option value="">— Select rating —</option>
+                <option>Strong</option><option>Solid</option><option>Needs Dev</option>
+              </select>
+              <textarea id="q-perf-comments" rows="2" placeholder="Add comments on quarterly performance..." oninput="markTouched('goals')"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Employee Aspirations</div>
+          <div class="field-hint">This should also be similarly reflected in the Wants It (W) of Right Person, Right Seat.<br>1. What is the employee expecting from Zuma in terms of personal and professional development?<br>2. Where does the employee see themselves in 5 years?<br>3. Are we in alignment with the employee?</div>
+          <textarea id="emp-aspirations" rows="4" placeholder="Please describe the employee's aspirations" oninput="markTouched('goals')"></textarea>
+        </div>
+        <div class="form-nav">
+          <span></span>
+          <button class="nav-btn primary" onclick="switchTab('values')">Corporate Values →</button>
+        </div>
+      </div>
+
+      <!-- CORPORATE VALUES -->
+      <div id="tab-values" class="tab-content">
+        <div class="section-header">
+          <div class="section-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <div class="section-title">Corporate Values</div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">We Keep It Real <span class="required-star">*</span>
+            <span class="info-btn-wrap" onclick="showInfo('real', this)"><button class="info-btn">i</button><span class="info-btn-label">Guide</span></span>
+          </div>
+          <div class="value-row">
+            <select id="val-real" onchange="markTouched('values')"><option value="">— Select rating —</option><option>Transparent</option><option>Reserved</option><option>Concealing</option></select>
+            <textarea id="val-real-comments" rows="2" placeholder="Comments on We Keep It Real..." oninput="markTouched('values')"></textarea>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">We Have Extreme Ownership <span class="required-star">*</span>
+            <span class="info-btn-wrap" onclick="showInfo('ownership', this)"><button class="info-btn">i</button><span class="info-btn-label">Guide</span></span>
+          </div>
+          <div class="value-row">
+            <select id="val-ownership" onchange="markTouched('values')"><option value="">— Select rating —</option><option>Accountable</option><option>Reactive</option><option>Deflecting</option></select>
+            <textarea id="val-ownership-comments" rows="2" placeholder="Comments on Extreme Ownership..." oninput="markTouched('values')"></textarea>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">We Go Beyond <span class="required-star">*</span>
+            <span class="info-btn-wrap" onclick="showInfo('beyond', this)"><button class="info-btn">i</button><span class="info-btn-label">Guide</span></span>
+          </div>
+          <div class="value-row">
+            <select id="val-beyond" onchange="markTouched('values')"><option value="">— Select rating —</option><option>Proactive</option><option>Reliable</option><option>Minimal</option></select>
+            <textarea id="val-beyond-comments" rows="2" placeholder="Comments on Go Beyond..." oninput="markTouched('values')"></textarea>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">We Have Optimistic Energy <span class="required-star">*</span>
+            <span class="info-btn-wrap" onclick="showInfo('energy', this)"><button class="info-btn">i</button><span class="info-btn-label">Guide</span></span>
+          </div>
+          <div class="value-row">
+            <select id="val-energy" onchange="markTouched('values')"><option value="">— Select rating —</option><option>Energizing</option><option>Steady</option><option>Draining</option></select>
+            <textarea id="val-energy-comments" rows="2" placeholder="Comments on Optimistic Energy..." oninput="markTouched('values')"></textarea>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">We Have A Growth Mindset <span class="required-star">*</span>
+            <span class="info-btn-wrap" onclick="showInfo('growth', this)"><button class="info-btn">i</button><span class="info-btn-label">Guide</span></span>
+          </div>
+          <div class="value-row">
+            <select id="val-growth" onchange="markTouched('values')"><option value="">— Select rating —</option><option>Growth-Oriented</option><option>Developing</option><option>Resistant</option></select>
+            <textarea id="val-growth-comments" rows="2" placeholder="Comments on Growth Mindset..." oninput="markTouched('values')"></textarea>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="nav-btn" onclick="switchTab('goals')">← Goals</button>
+          <button class="nav-btn primary" onclick="switchTab('gwc')">Right Person, Right Seat →</button>
+        </div>
+      </div>
+
+      <!-- GWC -->
+      <div id="tab-gwc" class="tab-content">
+        <div class="section-header">
+          <div class="section-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="section-title">Right Person, Right Seat</div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Gets It (G) <span class="required-star">*</span>
+            <span class="info-btn-wrap" onclick="showInfo('getsit', this)"><button class="info-btn">i</button><span class="info-btn-label">Guide</span></span>
+          </div>
+          <div class="value-row">
+            <select id="gwc-g" onchange="markTouched('gwc')"><option value="">— Select —</option><option>Yes</option><option>Dev</option><option>No</option></select>
+            <textarea id="gwc-g-comments" rows="2" placeholder="Comments on Gets It..." oninput="markTouched('gwc')"></textarea>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Wants It (W) <span class="required-star">*</span>
+            <span class="info-btn-wrap" onclick="showInfo('wantsit', this)"><button class="info-btn">i</button><span class="info-btn-label">Guide</span></span>
+          </div>
+          <div class="value-row">
+            <select id="gwc-w" onchange="markTouched('gwc')"><option value="">— Select —</option><option>Yes</option><option>Dev</option><option>No</option></select>
+            <textarea id="gwc-w-comments" rows="2" placeholder="Comments on Wants It..." oninput="markTouched('gwc')"></textarea>
+          </div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Capacity to Do It (C) <span class="required-star">*</span>
+            <span class="info-btn-wrap" onclick="showInfo('capacity', this)"><button class="info-btn">i</button><span class="info-btn-label">Guide</span></span>
+          </div>
+          <div class="value-row">
+            <select id="gwc-c" onchange="markTouched('gwc')"><option value="">— Select —</option><option>Yes</option><option>Dev</option><option>No</option></select>
+            <textarea id="gwc-c-comments" rows="2" placeholder="Comments on Capacity to Do It..." oninput="markTouched('gwc')"></textarea>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="nav-btn" onclick="switchTab('values')">← Corporate Values</button>
+          <button class="nav-btn primary" onclick="switchTab('expectations')">Expectations →</button>
+        </div>
+      </div>
+
+      <!-- EXPECTATIONS -->
+      <div id="tab-expectations" class="tab-content">
+        <div class="section-header">
+          <div class="section-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+          <div class="section-title">Expectations</div>
+        </div>
+        <div class="field-group">
+          <div class="field-label">YOUR Expectations</div>
+          <div class="field-hint">Outline your expectations of the employee's role and how the role supports our growth. This is not the FY26 goals — it is linked to them — and could include skill set development you will be supporting.</div>
+          <textarea id="exp-your" rows="6" placeholder="- Please outline your expectations in bullet points" oninput="markTouched('expectations')"></textarea>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Notes / YOUR Support Plan for the Employee</div>
+          <div class="field-hint">Use this for your notes — provide feedback for the exec team on the employee for the past period and your thoughts on their future. The exec team is particularly interested in how you are planning to support/develop the employee to achieve their goals.</div>
+          <textarea id="exp-notes" rows="6" placeholder="- Please add your notes in bullet points" oninput="markTouched('expectations')"></textarea>
+        </div>
+        <div class="form-nav">
+          <button class="nav-btn" onclick="switchTab('gwc')">← Right Person, Right Seat</button>
+          <button class="nav-btn" onclick="switchTab('goals')">↺ Back to Start</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Info Panel -->
+  <div class="info-panel">
+    <div id="info-panel-inner" class="info-panel-inner">
+      <button class="close-info-btn" onclick="closeInfo()">✕</button>
+      <div id="info-panel-content"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Mobile floating submit -->
+<div class="mobile-submit">
+  <button class="submit-btn" onclick="openModal()" style="display:flex;width:100%;">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    Submit Review
+  </button>
+</div>
+
+<!-- EDIT SCREEN -->
+<div class="edit-screen app-layout" id="screen-edit">
+  <aside class="edit-gallery">
+    <div class="panel-card">
+      <div class="field-meta">Filter Reviews</div>
+      <div style="margin-top:4px;margin-bottom:10px;">
+        <div class="field-meta" style="margin-bottom:5px;">Manager</div>
+        <select id="edit-sel-manager" onchange="onEditManagerChange()">
+          <option value="">All managers</option>
+        </select>
+      </div>
+      <div style="margin-bottom:10px;">
+        <div class="field-meta" style="margin-bottom:5px;">Employee</div>
+        <select id="edit-sel-employee" onchange="loadGallery()">
+          <option value="">All employees</option>
+        </select>
+      </div>
+      <div class="fy-row">
+        <div>
+          <div class="field-meta" style="margin-bottom:5px;">FY</div>
+          <select id="edit-sel-fy" onchange="loadGallery()">
+            <option>24</option><option>25</option><option selected>26</option><option>27</option>
+          </select>
+        </div>
+        <div>
+          <div class="field-meta" style="margin-bottom:5px;">Quarter</div>
+          <select id="edit-sel-quarter" onchange="loadGallery()">
+            <option value="1">Q1</option><option value="2">Q2</option>
+            <option value="3">Q3</option><option value="4" selected>Q4 / Annual</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="gallery-list" id="gallery-list">
+      <div class="gallery-header">Submitted Reviews</div>
+      <div class="gallery-empty">
+        <span class="gallery-empty-icon">📋</span>
+        <div class="gallery-empty-text">No reviews loaded</div>
+        <div class="gallery-empty-sub">Select FY and Quarter above</div>
+      </div>
+    </div>
+    <button class="edit-save-btn" id="edit-save-btn" onclick="saveEdit()" style="display:none;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      Save Changes
+    </button>
+  </aside>
+
+  <main class="edit-main">
+    <div id="edit-no-selection" class="form-panel no-review-selected">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--cloud)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <p>Select a review from the list to edit it</p>
+    </div>
+    <div id="edit-form-wrap" style="display:none;">
+      <nav class="tabs">
+        <button class="tab-btn active" onclick="switchEditTab('goals')">Goals</button>
+        <button class="tab-btn" onclick="switchEditTab('values')">Corporate Values</button>
+        <button class="tab-btn" onclick="switchEditTab('gwc')">Right Person, Right Seat</button>
+        <button class="tab-btn" onclick="switchEditTab('expectations')">Expectations</button>
+      </nav>
+      <div class="form-panel">
+        <div id="edit-tab-goals" class="tab-content active">
+          <div class="section-header"><div class="section-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+            <div class="section-title">Goals <span class="quarter-badge" id="edit-goals-quarter-label">Q4 / Annual</span></div>
+          </div>
+          <div id="edit-annual-section">
+            <div class="field-group"><div class="field-label"><span id="edit-fy-prev-label">FY25 Goals</span></div>
+              <textarea id="edit-fy-prev-goals" rows="4"></textarea></div>
+            <div class="field-group"><div class="field-label"><span id="edit-fy-next-label">FY26 Goals</span></div>
+              <textarea id="edit-fy-next-goals" rows="4"></textarea></div>
+            <div class="field-group"><div class="field-label"><span id="edit-fy-perf-label">FY25 Performance</span></div>
+              <div class="value-row">
+                <select id="edit-fy-performance"><option value="">— Select rating —</option><option>Strong</option><option>Solid</option><option>Needs Dev</option></select>
+                <textarea id="edit-fy-perf-comments" rows="2"></textarea>
+              </div></div>
+            <div class="section-divider"></div>
+          </div>
+          <div class="field-group"><div class="field-label"><span id="edit-q-goals-label">Q4 Goals</span></div>
+            <textarea id="edit-q-goals" rows="4"></textarea></div>
+          <div class="field-group"><div class="field-label"><span id="edit-q-perf-label">Q4 Performance</span></div>
+            <div class="value-row">
+              <select id="edit-q-performance"><option value="">— Select rating —</option><option>Strong</option><option>Solid</option><option>Needs Dev</option></select>
+              <textarea id="edit-q-perf-comments" rows="2"></textarea>
+            </div></div>
+          <div class="field-group"><div class="field-label">Employee Aspirations</div>
+            <textarea id="edit-emp-aspirations" rows="4"></textarea></div>
+          <div class="form-nav"><span></span><button class="nav-btn primary" onclick="switchEditTab('values')">Corporate Values →</button></div>
+        </div>
+        <div id="edit-tab-values" class="tab-content">
+          <div class="section-header"><div class="section-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="section-title">Corporate Values</div></div>
+          <div class="field-group"><div class="field-label">We Keep It Real</div><div class="value-row">
+            <select id="edit-val-real"><option value="">— Select rating —</option><option>Transparent</option><option>Reserved</option><option>Concealing</option></select>
+            <textarea id="edit-val-real-comments" rows="2"></textarea></div></div>
+          <div class="field-group"><div class="field-label">We Have Extreme Ownership</div><div class="value-row">
+            <select id="edit-val-ownership"><option value="">— Select rating —</option><option>Accountable</option><option>Reactive</option><option>Deflecting</option></select>
+            <textarea id="edit-val-ownership-comments" rows="2"></textarea></div></div>
+          <div class="field-group"><div class="field-label">We Go Beyond</div><div class="value-row">
+            <select id="edit-val-beyond"><option value="">— Select rating —</option><option>Proactive</option><option>Reliable</option><option>Minimal</option></select>
+            <textarea id="edit-val-beyond-comments" rows="2"></textarea></div></div>
+          <div class="field-group"><div class="field-label">We Have Optimistic Energy</div><div class="value-row">
+            <select id="edit-val-energy"><option value="">— Select rating —</option><option>Energizing</option><option>Steady</option><option>Draining</option></select>
+            <textarea id="edit-val-energy-comments" rows="2"></textarea></div></div>
+          <div class="field-group"><div class="field-label">We Have A Growth Mindset</div><div class="value-row">
+            <select id="edit-val-growth"><option value="">— Select rating —</option><option>Growth-Oriented</option><option>Developing</option><option>Resistant</option></select>
+            <textarea id="edit-val-growth-comments" rows="2"></textarea></div></div>
+          <div class="form-nav">
+            <button class="nav-btn" onclick="switchEditTab('goals')">← Goals</button>
+            <button class="nav-btn primary" onclick="switchEditTab('gwc')">Right Person, Right Seat →</button>
+          </div>
+        </div>
+        <div id="edit-tab-gwc" class="tab-content">
+          <div class="section-header"><div class="section-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div class="section-title">Right Person, Right Seat</div></div>
+          <div class="field-group"><div class="field-label">Gets It (G)</div><div class="value-row">
+            <select id="edit-gwc-g"><option value="">— Select —</option><option>Yes</option><option>Dev</option><option>No</option></select>
+            <textarea id="edit-gwc-g-comments" rows="2"></textarea></div></div>
+          <div class="field-group"><div class="field-label">Wants It (W)</div><div class="value-row">
+            <select id="edit-gwc-w"><option value="">— Select —</option><option>Yes</option><option>Dev</option><option>No</option></select>
+            <textarea id="edit-gwc-w-comments" rows="2"></textarea></div></div>
+          <div class="field-group"><div class="field-label">Capacity to Do It (C)</div><div class="value-row">
+            <select id="edit-gwc-c"><option value="">— Select —</option><option>Yes</option><option>Dev</option><option>No</option></select>
+            <textarea id="edit-gwc-c-comments" rows="2"></textarea></div></div>
+          <div class="form-nav">
+            <button class="nav-btn" onclick="switchEditTab('values')">← Corporate Values</button>
+            <button class="nav-btn primary" onclick="switchEditTab('expectations')">Expectations →</button>
+          </div>
+        </div>
+        <div id="edit-tab-expectations" class="tab-content">
+          <div class="section-header"><div class="section-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><div class="section-title">Expectations</div></div>
+          <div class="field-group"><div class="field-label">YOUR Expectations</div>
+            <textarea id="edit-exp-your" rows="6"></textarea></div>
+          <div class="field-group"><div class="field-label">Notes / YOUR Support Plan for the Employee</div>
+            <textarea id="edit-exp-notes" rows="6"></textarea></div>
+          <div class="form-nav">
+            <button class="nav-btn" onclick="switchEditTab('gwc')">← Right Person, Right Seat</button>
+            <button class="nav-btn" onclick="switchEditTab('goals')">↺ Back to Start</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const INFO_CONTENT = {
+  performance: `<div class="info-panel-title">Performance</div><div class="info-section-title">Responses</div><div class="rating-block"><strong>1. Strong</strong><span>a. Operates independently, anticipates risks, and improves the workflow.</span><span>b. Seeks improvement.</span><span>c. Handoffs are turnkey; others model this approach.</span></div><div class="rating-block"><strong>2. Solid</strong><span>a. Meets expectations with normal guidance; communicates issues promptly and follows established process.</span></div><div class="rating-block"><strong>3. Needs Dev</strong><span>a. Inconsistent delivery and late risk surfacing require frequent intervention.</span><span>b. Clear plan needed to close gaps.</span></div>`,
+  real: `<div class="info-panel-title">We Keep It Real</div><div class="info-section-title">What It Looks Like</div><div class="info-item">1. Facing Discomfort: Openly communicating even when the topic is uncomfortable, showing emotional openness and integrity.</div><div class="info-item">2. Honest Communication: Speaking truthfully and transparently, regardless of whether the news is good or bad.</div><div class="info-item">3. Genuine Interaction: Being true to oneself and others, without pretense or facades.</div><div class="info-section-title">Red Flags</div><div class="info-item">1. Avoids difficult conversations or waits until forced to address an issue.</div><div class="info-item">2. Softens or omits bad news; tells people what they want to hear.</div><div class="info-item">3. Puts on a different persona depending on who is in the room.</div><div class="info-item">4. Goes along with decisions in meetings but voices disagreement only privately afterward.</div><div class="info-section-title">Evidence Prompts</div><div class="info-item">1. "Tell me about a time you raised an uncomfortable issue directly with someone."</div><div class="info-item">2. "Describe a situation where you had to deliver difficult news. How did you handle it?"</div><div class="info-section-title">Responses</div><div class="rating-block"><strong>1. Transparent</strong><span>a. Consistently raises hard topics directly and early, even when uncomfortable.</span><span>b. Delivers good and bad news with the same level of honesty and clarity.</span><span>c. Shows up the same way in every setting; words and actions are consistent.</span></div><div class="rating-block"><strong>2. Reserved</strong><span>a. Generally honest but sometimes avoids raising difficult issues unprompted.</span><span>b. May soften bad news or wait for the "right moment" that doesn't come.</span><span>c. Authentic with some people or in some settings, more guarded in others.</span></div><div class="rating-block"><strong>3. Concealing</strong><span>a. Avoids or deflects uncomfortable conversations; issues surface late or via others.</span><span>b. Tells people what they want to hear rather than what is true.</span><span>c. Behaves differently depending on audience; difficult to read or trust.</span></div>`,
+  ownership: `<div class="info-panel-title">We Have Extreme Ownership</div><div class="info-section-title">What It Looks Like</div><div class="info-item">1. Taking Full Responsibility: Accepting accountability even when not entirely at fault.</div><div class="info-item">2. Proactive Problem-Solving: First to take the lead in resolving problems without waiting for others.</div><div class="info-section-title">Red Flags</div><div class="info-item">1. Points to other people, teams, or circumstances when something goes wrong.</div><div class="info-item">2. Waits to be told to fix a problem rather than stepping in.</div><div class="info-item">3. Frames issues as "not my responsibility" even when they are best placed to help.</div><div class="info-item">4. Repeats the same mistakes without taking steps to prevent recurrence.</div><div class="info-section-title">Evidence Prompts</div><div class="info-item">1. "Tell me about a time something went wrong that wasn't entirely your fault, but you owned it anyway."</div><div class="info-item">2. "Describe a problem you noticed and fixed before anyone asked you to."</div><div class="info-section-title">Responses</div><div class="rating-block"><strong>1. Accountable</strong><span>a. Owns outcomes fully, including parts outside their direct control, without blame-shifting.</span><span>b. Identifies and acts on problems before being asked; often first to step in.</span><span>c. Learns from mistakes and puts changes in place so they don't recur.</span></div><div class="rating-block"><strong>2. Reactive</strong><span>a. Takes ownership of their own mistakes but is slower to own shared or ambiguous issues.</span><span>b. Solves problems once flagged, but doesn't typically seek them out.</span><span>c. Occasionally repeats mistakes without a clear plan to prevent them.</span></div><div class="rating-block"><strong>3. Deflecting</strong><span>a. Attributes problems to others, process, or circumstances outside their control.</span><span>b. Waits for direction before addressing issues, even ones in their area.</span><span>c. Repeats the same mistakes with no visible change in approach.</span></div>`,
+  beyond: `<div class="info-panel-title">We Go Beyond</div><div class="info-section-title">What It Looks Like</div><div class="info-item">1. Team Support: Willingly takes on tasks outside of job descriptions to support the team and company.</div><div class="info-item">2. Proactive: Seeks out opportunities to add value and contribute in new ways.</div><div class="info-section-title">Red Flags</div><div class="info-item">1. Sticks rigidly to "that's not in my job description."</div><div class="info-item">2. Only does the minimum required to complete assigned tasks.</div><div class="info-item">3. Waits to be asked before helping, even when the need is visible.</div><div class="info-item">4. Shows reluctance or resentment when asked to step outside their usual role.</div><div class="info-section-title">Evidence Prompts</div><div class="info-item">1. "Tell me about a time you took on something outside your normal responsibilities to help the team."</div><div class="info-item">2. "What is something you contributed to recently that nobody asked you to do?"</div><div class="info-section-title">Responses</div><div class="rating-block"><strong>1. Proactive</strong><span>a. Regularly takes on tasks beyond their role to support the team or company.</span><span>b. Actively looks for ways to add value, even in areas outside their seat.</span><span>c. Volunteers for unglamorous or extra work without being asked.</span></div><div class="rating-block"><strong>2. Reliable</strong><span>a. Will help out when asked, and does so willingly, but rarely initiates.</span><span>b. Focuses primarily on their own role; occasional contributions beyond it.</span><span>c. Completes what is assigned reliably but doesn't actively seek more.</span></div><div class="rating-block"><strong>3. Minimal</strong><span>a. Sticks closely to defined responsibilities; resists work outside scope.</span><span>b. Rarely looks for ways to add value beyond their immediate tasks.</span><span>c. Shows reluctance when asked to help outside their usual role.</span></div>`,
+  energy: `<div class="info-panel-title">We Have Optimistic Energy</div><div class="info-section-title">What It Looks Like</div><div class="info-item">1. Staying Positive and Focused: Maintaining a hopeful and upbeat attitude, even in tough situations.</div><div class="info-item">2. Encouraging and Motivating Others: Inspiring positivity and motivation in those around you to create a positive environment.</div><div class="info-item">3. Prioritizing Well-being: Taking care of personal physical and mental health to maintain and spread positive energy.</div><div class="info-section-title">Red Flags</div><div class="info-item">1. Becomes negative, cynical, or withdrawn when things get difficult.</div><div class="info-item">2. Complains about challenges without offering ideas or encouragement.</div><div class="info-item">3. Drains energy from the team in meetings or day-to-day interactions.</div><div class="info-item">4. Neglects own well-being to the point it affects mood, focus, or reliability.</div><div class="info-section-title">Evidence Prompts</div><div class="info-item">1. "Tell me about a tough period recently. How did you stay positive, and how did that affect those around you?"</div><div class="info-item">2. "How do you manage your own energy and well-being, especially during busy periods?"</div><div class="info-section-title">Responses</div><div class="rating-block"><strong>1. Energizing</strong><span>a. Stays positive and focused even under pressure; attitude doesn't waver with setbacks.</span><span>b. Actively lifts others up and helps create a positive team environment.</span><span>c. Manages own well-being well, sustaining energy and consistency over time.</span></div><div class="rating-block"><strong>2. Steady</strong><span>a. Generally positive, though may dip during especially tough stretches.</span><span>b. Doesn't actively drain the team, but doesn't consistently lift others either.</span><span>c. Manages well-being reasonably, with occasional periods of strain.</span></div><div class="rating-block"><strong>3. Draining</strong><span>a. Tends toward negativity or cynicism, especially when things get hard.</span><span>b. Energy or comments noticeably bring down those around them.</span><span>c. Well-being appears neglected in ways that affect mood, focus, or output.</span></div>`,
+  growth: `<div class="info-panel-title">We Have A Growth Mindset</div><div class="info-section-title">What It Looks Like</div><div class="info-item">1. Curiosity and Innovation: Being curious and always looking for and contributing to innovation.</div><div class="info-item">2. Continuous Learning: Continuing to seek knowledge and skills.</div><div class="info-item">3. Adaptability: Accepting and adopting change.</div><div class="info-item">4. Welcoming Feedback: Welcoming constructive criticism to improve performance.</div><div class="info-section-title">Red Flags</div><div class="info-item">1. Defaults to "this is how we've always done it" without question.</div><div class="info-item">2. Treats their current skill set as "good enough" and shows little interest in developing further.</div><div class="info-item">3. Resists change, drags out transitions, or reverts to old methods when given the chance.</div><div class="info-item">4. Becomes defensive, dismissive, or withdrawn when given constructive criticism.</div><div class="info-section-title">Evidence Prompts</div><div class="info-item">1. "Tell me about something new you learned or tried recently, and what came of it."</div><div class="info-item">2. "Describe a recent change at work. How did you adjust, and what was that like for you?"</div><div class="info-item">3. "Tell me about a piece of feedback you received that changed how you do something."</div><div class="info-section-title">Responses</div><div class="rating-block"><strong>1. Growth-Oriented</strong><span>a. Regularly asks questions, explores new ideas, and contributes to innovation rather than just consuming it.</span><span>b. Actively pursues new knowledge and skills, even outside what's immediately required.</span><span>c. Adjusts quickly to change, often helping others adapt along the way.</span><span>d. Seeks out feedback proactively and visibly applies it to improve.</span></div><div class="rating-block"><strong>2. Developing</strong><span>a. Open to new ideas when prompted, but doesn't often seek them out independently.</span><span>b. Learns what's needed for the role but rarely pursues development beyond that.</span><span>c. Adapts to change with some time or support, occasionally needing reassurance.</span><span>d. Accepts feedback reasonably well, though may need encouragement to act on it.</span></div><div class="rating-block"><strong>3. Resistant</strong><span>a. Prefers familiar approaches; shows little curiosity about new methods or ideas.</span><span>b. Shows minimal interest in building new skills or knowledge beyond the basics.</span><span>c. Resists or slows down change, sometimes reverting to old habits.</span><span>d. Reacts defensively to feedback or does not apply it going forward.</span></div>`,
+  getsit: `<div class="info-panel-title">Gets It (G)</div><div class="info-section-title">Key Questions</div><div class="info-item">1. Can the team member clearly explain their core responsibilities?</div><div class="info-item">2. Do they understand how their role contributes to company goals and customer value?</div><div class="info-item">3. Do they grasp the systems, tools, and processes required to perform?</div><div class="info-item">4. Do they show good judgment in making decisions without handholding?</div><div class="info-item">5. Do they naturally recognize problems and opportunities in their area of responsibility?</div><div class="info-section-title">Responses</div><div class="rating-block"><strong>1. Yes</strong><span>a. Intuitively grasps how the role, processes, and business fit together.</span><span>b. Anticipates downstream impact without being told.</span><span>c. Makes sound trade-offs and explains the "why" in plain language.</span></div><div class="rating-block"><strong>2. Dev</strong><span>a. Understands the tasks but misses context or second-order effects.</span><span>b. Needs translation on non-routine work; asks "what next?" often.</span><span>c. Corrects after feedback but patterns haven't stuck yet.</span></div><div class="rating-block"><strong>3. No</strong><span>a. Repeats the same misunderstandings; can't map work to business outcomes.</span><span>b. Solutions create churn for other functions; decisions feel random.</span><span>c. Can't teach the basics of their own seat to others.</span></div>`,
+  wantsit: `<div class="info-panel-title">Wants It (W)</div><div class="info-section-title">Key Questions</div><div class="info-item">1. Do they consistently show enthusiasm for their work?</div><div class="info-item">2. Do they take ownership without being pushed?</div><div class="info-item">3. Do they respond positively when given new responsibilities?</div><div class="info-item">4. Are they engaged in meetings and proactive in communication?</div><div class="info-item">5. If they had another option, would they still choose this seat?</div><div class="info-section-title">Responses</div><div class="rating-block"><strong>1. Yes</strong><span>a. Leans into responsibility; asks for harder problems and feedback.</span><span>b. Volunteers for improvements; keeps a positive, owner's tone.</span><span>c. Self-initiates learning relevant to the seat.</span></div><div class="rating-block"><strong>2. Dev</strong><span>a. Completes assigned work but rarely seeks stretch or ownership.</span><span>b. Motivation fluctuates with difficulty/visibility.</span><span>c. Needs nudging to engage beyond baseline.</span></div><div class="rating-block"><strong>3. No</strong><span>a. Avoids accountability or tough work; "that's not my job."</span><span>b. Negative or resistant to change; drags on team energy.</span><span>c. Growth and feedback are met with defensiveness.</span></div>`,
+  capacity: `<div class="info-panel-title">Capacity to Do It (C)</div><div class="info-section-title">Key Questions</div><div class="info-item">1. Do they have the necessary technical skills and knowledge?</div><div class="info-item">2. Do they have the leadership/soft skills required?</div><div class="info-item">3. Do they have the time and focus available, or are they overcommitted?</div><div class="info-item">4. Do they show the emotional resilience and energy the role demands?</div><div class="info-item">5. Do they continue to grow skills as the role evolves?</div><div class="info-section-title">Responses</div><div class="rating-block"><strong>1. Yes</strong><span>a. Has (or quickly builds) the skills, time, and systems fluency for the seat.</span><span>b. Manages load predictably; meets deadlines without quality trade-offs.</span><span>c. Uses company tools well and scales to complexity.</span></div><div class="rating-block"><strong>2. Dev</strong><span>a. Some skill/tool gaps or chronic over-allocation; needs structure/mentoring.</span><span>b. Quality slips under load; recovers with support.</span><span>c. Can handle pieces of the seat; not yet the full scope.</span></div><div class="rating-block"><strong>3. No</strong><span>a. Persistent misses despite coaching; workload overwhelms basics.</span><span>b. Tool/skill deficits create rework for others.</span><span>c. Cannot sustain cadence even with accommodations.</span></div>`
+};
+
+let EMPLOYEES = [];
+let currentTab = 'goals';
+let _lastInfoBtn = null;
+const touchedTabs = new Set();
+
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzWM0JMSlsvQ0Ms_sgNpnQfPjvPbSyCEBWDrsf1SxsEwlFQCJXBLwvpv5y-RiE8zBmxKQ/exec';
+
+// ── PROGRESS TRACKING ──
+
+// Required fields per tab
+const REQUIRED = {
+  goals: ['fy-prev-goals','fy-next-goals','fy-performance','q-goals','q-performance'],
+  values: ['val-real','val-ownership','val-beyond','val-energy','val-growth'],
+  gwc: ['gwc-g','gwc-w','gwc-c'],
+  expectations: ['exp-your','exp-notes']
+};
+
+// Optional fields (comments are now required, so nothing optional)
+const OPTIONAL = {
+  goals: ['fy-perf-comments','q-perf-comments','emp-aspirations'],
+  values: ['val-real-comments','val-ownership-comments','val-beyond-comments','val-energy-comments','val-growth-comments'],
+  gwc: ['gwc-g-comments','gwc-w-comments','gwc-c-comments'],
+  expectations: ['exp-your','exp-notes']
+};
+
+function getTabStatus(tab) {
+  const required = REQUIRED[tab] || [];
+  const optional = OPTIONAL[tab] || [];
+
+  const reqFilled = required.filter(id => {
+    const el = document.getElementById(id);
+    return el && el.value && el.value.trim() !== '';
+  }).length;
+
+  const optFilled = optional.filter(id => {
+    const el = document.getElementById(id);
+    return el && el.value && el.value.trim() !== '';
+  }).length;
+
+  if (reqFilled === 0 && optFilled === 0) return 'empty';
+  if (reqFilled < required.length) return 'partial';
+  if (optFilled === 0 && optional.length > 0) return 'partial';
+  return 'complete';
+}
+
+function markTouched(tab) {
+  touchedTabs.add(tab);
+  updateProgress();
+}
+
+function updateProgress() {
+  ['goals','values','gwc','expectations'].forEach(tab => {
+    const dot = document.getElementById('dot-' + tab);
+    const row = document.getElementById('prog-' + tab);
+    if (!dot || !row) return;
+    dot.classList.remove('active','partial','empty','complete');
+    row.classList.remove('active','partial','empty','complete');
+
+    if (tab === currentTab) {
+      dot.classList.add('active');
+      row.classList.add('active');
+    } else if (touchedTabs.has(tab)) {
+      const status = getTabStatus(tab);
+      dot.classList.add(status);
+      row.classList.add(status);
+    }
+  });
+}
+
+// ── EMPLOYEES ──
+function loadEmployees() {
+  const mgrSel = document.getElementById('sel-manager');
+  mgrSel.innerHTML = '<option value="">Loading...</option>';
+  window._employeesCallback = function(data) {
+    EMPLOYEES = data || [];
+    const managers = [...new Set(EMPLOYEES.map(e => e.manager).filter(Boolean))].sort();
+    mgrSel.innerHTML = '<option value="">Select manager</option>';
+    managers.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m; opt.textContent = m;
+      mgrSel.appendChild(opt);
+    });
+  };
+  const existing = document.getElementById('employees-script');
+  if (existing) existing.remove();
+  const s = document.createElement('script');
+  s.id = 'employees-script';
+  s.onerror = () => {
+    mgrSel.innerHTML = '<option value="">Select manager</option>';
+    document.getElementById('sel-employee').innerHTML = '<option value="">Select employee</option>';
+  };
+  s.src = SCRIPT_URL + '?action=getEmployees&callback=_employeesCallback';
+  document.head.appendChild(s);
+}
+
+function onManagerChange() {
+  const manager = document.getElementById('sel-manager').value;
+  const empSel = document.getElementById('sel-employee');
+  empSel.innerHTML = '<option value="">Select employee</option>';
+  if (manager) {
+    EMPLOYEES.filter(e => e.manager === manager).forEach(e => {
+      const opt = document.createElement('option');
+      opt.value = e.employee; opt.textContent = e.employee;
+      empSel.appendChild(opt);
+    });
+  }
+  updateHeaderContext();
+}
+
+function onEmployeeChange() { updateHeaderContext(); }
+
+function updateHeaderContext() {
+  const mgr = document.getElementById('sel-manager').value;
+  const emp = document.getElementById('sel-employee').value;
+  const fy = document.getElementById('sel-fy').value;
+  const q = document.getElementById('sel-quarter');
+  const qLabel = q.options[q.selectedIndex]?.text || '';
+  let ctx = '';
+  if (mgr) ctx += mgr;
+  if (emp) ctx += ' › ' + emp;
+  if (fy) ctx += '  ·  FY' + fy + ' ' + qLabel;
+  const el = document.getElementById('header-context');
+  el.textContent = ctx;
+  el.classList.toggle('has-employee', !!emp);
+  updateGoalsLabels();
+}
+
+function updateGoalsLabels() {
+  const fy = document.getElementById('sel-fy').value;
+  const qSel = document.getElementById('sel-quarter');
+  const qVal = qSel.value;
+  const qText = qSel.options[qSel.selectedIndex]?.text || '';
+  const prevFY = String(parseInt(fy) - 1);
+  document.getElementById('fy-prev-label').textContent = `FY${prevFY} Goals`;
+  document.getElementById('fy-next-label').textContent = `FY${fy} Goals`;
+  document.getElementById('fy-prev-goals').placeholder = `Enter FY${prevFY} Goals...`;
+  document.getElementById('fy-next-goals').placeholder = `Enter FY${fy} Goals...`;
+  document.getElementById('fy-perf-label').textContent = `FY${prevFY} Performance`;
+  document.getElementById('annual-goals-section').style.display = qVal === '4' ? 'block' : 'none';
+  document.getElementById('q-goals-label').textContent = `Q${qVal} Goals`;
+  document.getElementById('q-perf-label').textContent = `Q${qVal} Performance`;
+  document.getElementById('goals-quarter-label').textContent = qText;
+}
+
+const TAB_NAMES = {
+  goals: 'Goals',
+  values: 'Corporate Values',
+  gwc: 'Right Person, Right Seat',
+  expectations: 'Expectations'
+};
+
+function switchTab(tab) {
+  if (currentTab && currentTab !== tab) {
+    touchedTabs.add(currentTab);
+  }
+  currentTab = tab;
+  touchedTabs.add(tab);
+  document.querySelectorAll('#screen-new .tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#screen-new .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  const idx = ['goals','values','gwc','expectations'].indexOf(tab);
+  document.querySelectorAll('#screen-new .tab-btn')[idx].classList.add('active');
+  closeInfo();
+  updateProgress();
+  updateStickyHeader();
+}
+
+const SECTION_ICONS = {
+  goals: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>',
+  values: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  gwc: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  expectations: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>',
+};
+
+function updateStickyHeader() {
+  const header = document.getElementById('sticky-tab-header');
+  const icon = document.getElementById('sticky-tab-icon');
+  const title = document.getElementById('sticky-tab-title');
+  if (!header) return;
+  icon.innerHTML = SECTION_ICONS[currentTab] || '';
+  title.textContent = TAB_NAMES[currentTab] || currentTab;
+  const sectionHeader = document.querySelector('#tab-' + currentTab + ' .section-header');
+  if (!sectionHeader) return;
+  const rect = sectionHeader.getBoundingClientRect();
+  header.classList.toggle('visible', rect.bottom < 58);
+}
+
+window.addEventListener('scroll', updateStickyHeader, { passive: true });
+
+// ── INFO PANEL ──
+function showInfo(key, btn) {
+  const panel = document.getElementById('info-panel-inner');
+  document.getElementById('info-panel-content').innerHTML = INFO_CONTENT[key] || '';
+  panel.classList.add('visible');
+  document.getElementById('info-overlay').classList.add('visible');
+  _lastInfoBtn = btn;
+  positionPanel(btn);
+}
+
+function positionPanel(btn) {
+  const panel = document.getElementById('info-panel-inner');
+  if (!panel.classList.contains('visible')) return;
+  const btnRect = btn.getBoundingClientRect();
+  const panelW = 280;
+  const panelH = panel.scrollHeight || 400;
+  const vh = window.innerHeight;
+  const vw = window.innerWidth;
+  if (vw <= 768) return; // mobile uses bottom sheet CSS
+  panel.style.left = (vw - panelW - 16) + 'px';
+  panel.style.width = panelW + 'px';
+  let top = btnRect.top;
+  if (top + panelH > vh - 10) top = vh - panelH - 10;
+  if (top < 68) top = 68;
+  panel.style.top = top + 'px';
+}
+
+function closeInfo() {
+  document.getElementById('info-panel-inner').classList.remove('visible');
+  document.getElementById('info-overlay').classList.remove('visible');
+  _lastInfoBtn = null;
+}
+
+// ── MODAL ──
+// Field label lookup for friendly names in validation
+const FIELD_LABELS = {
+  'fy-prev-goals':   { tab: 'Goals', label: 'FY Previous Goals' },
+  'fy-next-goals':   { tab: 'Goals', label: 'FY Review Goals' },
+  'fy-performance':  { tab: 'Goals', label: 'FY Performance rating' },
+  'q-goals':         { tab: 'Goals', label: 'Q Goals' },
+  'q-performance':   { tab: 'Goals', label: 'Q Performance rating' },
+  'val-real':        { tab: 'Corporate Values', label: 'We Keep It Real rating' },
+  'val-ownership':   { tab: 'Corporate Values', label: 'We Have Extreme Ownership rating' },
+  'val-beyond':      { tab: 'Corporate Values', label: 'We Go Beyond rating' },
+  'val-energy':      { tab: 'Corporate Values', label: 'We Have Optimistic Energy rating' },
+  'val-growth':      { tab: 'Corporate Values', label: 'We Have A Growth Mindset rating' },
+  'gwc-g':           { tab: 'Right Person, Right Seat', label: 'Gets It rating' },
+  'gwc-w':           { tab: 'Right Person, Right Seat', label: 'Wants It rating' },
+  'gwc-c':           { tab: 'Right Person, Right Seat', label: 'Capacity to Do It rating' },
+};
+
+function getQualFY() {
+  // Only require FY goals/perf if Q4 is selected
+  return document.getElementById('sel-quarter').value === '4';
+}
+
+function validateForm() {
+  const missing = [];
+  const allRequired = [
+    ...( getQualFY() ? ['fy-prev-goals','fy-next-goals','fy-performance'] : [] ),
+    'q-goals','q-performance',
+    'val-real','val-ownership','val-beyond','val-energy','val-growth',
+    'gwc-g','gwc-w','gwc-c',
+  ];
+  allRequired.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el || !el.value || el.value.trim() === '') {
+      missing.push(FIELD_LABELS[id] || { tab: 'Other', label: id });
+    }
+  });
+  return missing;
+}
+
+function openModal() {
+  const employee = document.getElementById('sel-employee').value;
+  const manager = document.getElementById('sel-manager').value;
+  if (!employee || !manager) {
+    alert('Please select a Manager and Employee before submitting.');
+    return;
+  }
+
+  const missing = validateForm();
+  if (missing.length > 0) {
+    const list = document.getElementById('validation-list');
+    const grouped = {};
+    missing.forEach(f => {
+      if (!grouped[f.tab]) grouped[f.tab] = [];
+      grouped[f.tab].push(f.label);
+    });
+    list.style.padding = '0';
+    list.innerHTML = Object.entries(grouped).map(([tab, fields]) =>
+      '<li style="list-style:none;margin-bottom:12px;">' +
+        '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--fog);margin-bottom:5px;">' + tab + '</div>' +
+        '<ul style="padding-left:16px;display:flex;flex-direction:column;gap:4px;">' +
+          fields.map(f => '<li style="font-size:13px;color:var(--text-2);">' + f + '</li>').join('') +
+        '</ul>' +
+      '</li>'
+    ).join('');
+    document.getElementById('validation-modal').classList.add('visible');
+    return;
+  }
+
+  document.getElementById('modal-employee-name').textContent = employee;
+  document.getElementById('confirm-modal').classList.add('visible');
+}
+
+function closeValidationModal() {
+  document.getElementById('validation-modal').classList.remove('visible');
+}
+
+function closeModal() {
+  document.getElementById('confirm-modal').classList.remove('visible');
+}
+
+function confirmSubmit() {
+  closeModal();
+  doSubmit();
+}
+
+function doSubmit() {
+  const employee = document.getElementById('sel-employee').value;
+  const manager = document.getElementById('sel-manager').value;
+  const qSel = document.getElementById('sel-quarter');
+  const payload = {
+    manager, employee,
+    fy: document.getElementById('sel-fy').value,
+    quarter: qSel.options[qSel.selectedIndex].text,
+    previousFYGoals: document.getElementById('fy-prev-goals').value,
+    reviewFYGoals: document.getElementById('fy-next-goals').value,
+    fyPerformance: document.getElementById('fy-performance').value,
+    fyPerformanceComments: document.getElementById('fy-perf-comments').value,
+    qGoals: document.getElementById('q-goals').value,
+    qPerformance: document.getElementById('q-performance').value,
+    qPerformanceComments: document.getElementById('q-perf-comments').value,
+    employeeAspirations: document.getElementById('emp-aspirations').value,
+    weKeepItReal: document.getElementById('val-real').value,
+    weKeepItRealComments: document.getElementById('val-real-comments').value,
+    extremeOwnership: document.getElementById('val-ownership').value,
+    extremeOwnershipComments: document.getElementById('val-ownership-comments').value,
+    goBeyond: document.getElementById('val-beyond').value,
+    goBeyondComments: document.getElementById('val-beyond-comments').value,
+    optimisticEnergy: document.getElementById('val-energy').value,
+    optimisticEnergyComments: document.getElementById('val-energy-comments').value,
+    growthMindset: document.getElementById('val-growth').value,
+    growthMindsetComments: document.getElementById('val-growth-comments').value,
+    getsIt: document.getElementById('gwc-g').value,
+    getsItComments: document.getElementById('gwc-g-comments').value,
+    wantsIt: document.getElementById('gwc-w').value,
+    wantsItComments: document.getElementById('gwc-w-comments').value,
+    capacity: document.getElementById('gwc-c').value,
+    capacityComments: document.getElementById('gwc-c-comments').value,
+    expectations: document.getElementById('exp-your').value,
+    managerNotes: document.getElementById('exp-notes').value,
+  };
+
+  document.querySelectorAll('.submit-btn').forEach(b => { b.textContent = 'Submitting…'; b.disabled = true; });
+  const url = SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
+  const img = new Image();
+  img.onload = img.onerror = function() {
+    const banner = document.getElementById('submitted-banner');
+    document.getElementById('submitted-text').textContent = `Review for ${employee} submitted successfully!`;
+    banner.classList.add('visible');
+    setTimeout(() => banner.classList.remove('visible'), 6000);
+    document.querySelectorAll('.submit-btn').forEach(b => {
+      b.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Submit Review`;
+      b.disabled = false;
+    });
+    resetForm();
+  };
+  img.src = url;
+}
+
+// Clear all form fields after a successful submission, ready for the next review
+function resetForm() {
+  const fieldIds = [
+    'fy-prev-goals','fy-next-goals','fy-performance','fy-perf-comments',
+    'q-goals','q-performance','q-perf-comments','emp-aspirations',
+    'val-real','val-real-comments','val-ownership','val-ownership-comments',
+    'val-beyond','val-beyond-comments','val-energy','val-energy-comments',
+    'val-growth','val-growth-comments',
+    'gwc-g','gwc-g-comments','gwc-w','gwc-w-comments','gwc-c','gwc-c-comments',
+    'exp-your','exp-notes'
+  ];
+  fieldIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+
+  // Reset employee/manager selection
+  document.getElementById('sel-manager').value = '';
+  document.getElementById('sel-employee').innerHTML = '<option value="">Select employee</option>';
+  updateHeaderContext();
+
+  // Reset progress tracking
+  touchedTabs.clear();
+  switchTab('goals');
+}
+
+// ── INIT ──
+document.getElementById('sel-quarter').addEventListener('change', updateGoalsLabels);
+document.getElementById('sel-fy').addEventListener('change', updateGoalsLabels);
+document.addEventListener('scroll', () => { if (_lastInfoBtn) positionPanel(_lastInfoBtn); }, { passive: true });
+updateGoalsLabels();
+loadEmployees();
+updateProgress();
+
+// ── EDIT SCREEN ──
+let allReviews = [];
+let selectedRowIndex = null;
+
+function showScreen(screen) {
+  document.getElementById('screen-new').classList.toggle('hidden', screen !== 'new');
+  document.getElementById('screen-edit').classList.toggle('active', screen === 'edit');
+  document.getElementById('btn-screen-new').classList.toggle('active', screen === 'new');
+  document.getElementById('btn-screen-edit').classList.toggle('active', screen === 'edit');
+  if (screen === 'edit') {
+    populateEditFilters();
+    loadGallery();
+  }
+}
+
+// Populate Manager/Employee dropdowns on the Edit screen from the same EMPLOYEES list
+function populateEditFilters() {
+  const mgrSel = document.getElementById('edit-sel-manager');
+  if (mgrSel.options.length <= 1 && EMPLOYEES.length > 0) {
+    const managers = [...new Set(EMPLOYEES.map(e => e.manager).filter(Boolean))].sort();
+    mgrSel.innerHTML = '<option value="">All managers</option>';
+    managers.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m; opt.textContent = m;
+      mgrSel.appendChild(opt);
+    });
+  }
+  onEditManagerChange(true);
+}
+
+function onEditManagerChange(skipReload) {
+  const manager = document.getElementById('edit-sel-manager').value;
+  const empSel = document.getElementById('edit-sel-employee');
+  const currentVal = empSel.value;
+  empSel.innerHTML = '<option value="">All employees</option>';
+  const list = manager ? EMPLOYEES.filter(e => e.manager === manager) : EMPLOYEES;
+  [...new Set(list.map(e => e.employee))].sort().forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name; opt.textContent = name;
+    empSel.appendChild(opt);
+  });
+  // Preserve selection if still valid
+  if ([...empSel.options].some(o => o.value === currentVal)) empSel.value = currentVal;
+  if (!skipReload) loadGallery();
+}
+
+function loadGallery() {
+  const fy = document.getElementById('edit-sel-fy').value;
+  const qSel = document.getElementById('edit-sel-quarter');
+  const qText = qSel.options[qSel.selectedIndex].text;
+  const manager = document.getElementById('edit-sel-manager').value;
+  const employee = document.getElementById('edit-sel-employee').value;
+  const list = document.getElementById('gallery-list');
+  list.innerHTML = '<div class="gallery-header">Submitted Reviews</div><div class="gallery-empty"><span class="gallery-empty-icon">⏳</span><div class="gallery-empty-text">Loading reviews...</div></div>';
+  const existingScript = document.getElementById('fetch-script');
+  if (existingScript) existingScript.remove();
+  window._galleryCallback = function(data) {
+    allReviews = data || [];
+    const filtered = allReviews.filter(r =>
+      String(r.fy) === String(fy) &&
+      r.quarter === qText &&
+      (!manager || r.manager === manager) &&
+      (!employee || r.employee === employee)
+    );
+    renderGallery(filtered);
+  };
+  const s = document.createElement('script');
+  s.id = 'fetch-script';
+  s.src = SCRIPT_URL + '?action=getAll&callback=_galleryCallback&fy=' + fy + '&quarter=' + encodeURIComponent(qText);
+  s.onerror = () => {
+    list.innerHTML = '<div class="gallery-header">Submitted Reviews</div><div class="gallery-empty"><span class="gallery-empty-icon">⚠️</span><div class="gallery-empty-text">Could not load reviews</div><div class="gallery-empty-sub">Check your connection and try again</div></div>';
+  };
+  document.head.appendChild(s);
+}
+
+function renderGallery(reviews) {
+  const list = document.getElementById('gallery-list');
+  if (reviews.length === 0) {
+    list.innerHTML = '<div class="gallery-header">Submitted Reviews</div><div class="gallery-empty"><span class="gallery-empty-icon">📭</span><div class="gallery-empty-text">No reviews found</div><div class="gallery-empty-sub">No reviews for this FY and quarter</div></div>';
+    return;
+  }
+  let html = '<div class="gallery-header">Submitted Reviews</div>';
+  reviews.forEach(r => {
+    html += `<div class="gallery-item" onclick="selectReview(${r._rowIndex})">
+      <div>
+        <div class="gallery-item-name">${r.employee || 'Unknown'}</div>
+        <div class="gallery-item-meta">${r.manager || ''} · FY${r.fy} ${r.quarter}</div>
+      </div>
+      <span class="gallery-item-arrow">›</span>
+    </div>`;
+  });
+  list.innerHTML = html;
+}
+
+function selectReview(rowIndex) {
+  selectedRowIndex = rowIndex;
+  const r = allReviews.find(x => x._rowIndex === rowIndex);
+  if (!r) return;
+  document.querySelectorAll('.gallery-item').forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  document.getElementById('edit-no-selection').style.display = 'none';
+  document.getElementById('edit-form-wrap').style.display = 'block';
+  document.getElementById('edit-save-btn').style.display = 'flex';
+  const fy = r.fy || '26';
+  const prevFY = String(parseInt(fy) - 1);
+  const qSel = document.getElementById('edit-sel-quarter');
+  const qVal = qSel.value;
+  const qText = qSel.options[qSel.selectedIndex].text;
+  document.getElementById('edit-fy-prev-label').textContent = `FY${prevFY} Goals`;
+  document.getElementById('edit-fy-next-label').textContent = `FY${fy} Goals`;
+  document.getElementById('edit-fy-perf-label').textContent = `FY${prevFY} Performance`;
+  document.getElementById('edit-q-goals-label').textContent = `Q${qVal} Goals`;
+  document.getElementById('edit-q-perf-label').textContent = `Q${qVal} Performance`;
+  document.getElementById('edit-goals-quarter-label').textContent = qText;
+  document.getElementById('edit-annual-section').style.display = qVal === '4' ? 'block' : 'none';
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+  const setSelect = (id, val) => {
+    const el = document.getElementById(id); if (!el) return;
+    for (let o of el.options) { if (o.value === val || o.text === val) { el.value = o.value; return; } }
+    el.value = '';
+  };
+  set('edit-fy-prev-goals', r.previousFYGoals); set('edit-fy-next-goals', r.reviewFYGoals);
+  setSelect('edit-fy-performance', r.fyPerformance); set('edit-fy-perf-comments', r.fyPerformanceComments);
+  set('edit-q-goals', r.qGoals); setSelect('edit-q-performance', r.qPerformance);
+  set('edit-q-perf-comments', r.qPerformanceComments); set('edit-emp-aspirations', r.employeeAspirations);
+  setSelect('edit-val-real', r.weKeepItReal); set('edit-val-real-comments', r.weKeepItRealComments);
+  setSelect('edit-val-ownership', r.extremeOwnership); set('edit-val-ownership-comments', r.extremeOwnershipComments);
+  setSelect('edit-val-beyond', r.goBeyond); set('edit-val-beyond-comments', r.goBeyondComments);
+  setSelect('edit-val-energy', r.optimisticEnergy); set('edit-val-energy-comments', r.optimisticEnergyComments);
+  setSelect('edit-val-growth', r.growthMindset); set('edit-val-growth-comments', r.growthMindsetComments);
+  setSelect('edit-gwc-g', r.getsIt); set('edit-gwc-g-comments', r.getsItComments);
+  setSelect('edit-gwc-w', r.wantsIt); set('edit-gwc-w-comments', r.wantsItComments);
+  setSelect('edit-gwc-c', r.capacity); set('edit-gwc-c-comments', r.capacityComments);
+  set('edit-exp-your', r.expectations); set('edit-exp-notes', r.managerNotes);
+}
+
+function switchEditTab(tab) {
+  document.querySelectorAll('#edit-form-wrap .tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#edit-form-wrap .tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('edit-tab-' + tab).classList.add('active');
+  const idx = ['goals','values','gwc','expectations'].indexOf(tab);
+  document.querySelectorAll('#edit-form-wrap .tab-btn')[idx].classList.add('active');
+}
+
+function saveEdit() {
+  if (selectedRowIndex === null) return;
+  const btn = document.getElementById('edit-save-btn');
+  btn.textContent = 'Saving…'; btn.disabled = true;
+  const payload = {
+    action: 'update', rowIndex: selectedRowIndex,
+    previousFYGoals: document.getElementById('edit-fy-prev-goals').value,
+    reviewFYGoals: document.getElementById('edit-fy-next-goals').value,
+    fyPerformance: document.getElementById('edit-fy-performance').value,
+    fyPerformanceComments: document.getElementById('edit-fy-perf-comments').value,
+    qGoals: document.getElementById('edit-q-goals').value,
+    qPerformance: document.getElementById('edit-q-performance').value,
+    qPerformanceComments: document.getElementById('edit-q-perf-comments').value,
+    employeeAspirations: document.getElementById('edit-emp-aspirations').value,
+    weKeepItReal: document.getElementById('edit-val-real').value,
+    weKeepItRealComments: document.getElementById('edit-val-real-comments').value,
+    extremeOwnership: document.getElementById('edit-val-ownership').value,
+    extremeOwnershipComments: document.getElementById('edit-val-ownership-comments').value,
+    goBeyond: document.getElementById('edit-val-beyond').value,
+    goBeyondComments: document.getElementById('edit-val-beyond-comments').value,
+    optimisticEnergy: document.getElementById('edit-val-energy').value,
+    optimisticEnergyComments: document.getElementById('edit-val-energy-comments').value,
+    growthMindset: document.getElementById('edit-val-growth').value,
+    growthMindsetComments: document.getElementById('edit-val-growth-comments').value,
+    getsIt: document.getElementById('edit-gwc-g').value,
+    getsItComments: document.getElementById('edit-gwc-g-comments').value,
+    wantsIt: document.getElementById('edit-gwc-w').value,
+    wantsItComments: document.getElementById('edit-gwc-w-comments').value,
+    capacity: document.getElementById('edit-gwc-c').value,
+    capacityComments: document.getElementById('edit-gwc-c-comments').value,
+    expectations: document.getElementById('edit-exp-your').value,
+    managerNotes: document.getElementById('edit-exp-notes').value,
+  };
+  const url = SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
+  const img = new Image();
+  img.onload = img.onerror = function() {
+    btn.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Save Changes`;
+    btn.disabled = false;
+    const r = allReviews.find(x => x._rowIndex === selectedRowIndex);
+    if (r) Object.assign(r, payload);
+    alert('Changes saved successfully!');
+  };
+  img.src = url;
+}
+</script>
+</body>
+</html>
